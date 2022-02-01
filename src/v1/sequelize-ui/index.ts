@@ -4,12 +4,12 @@ import { Model, ModelCtor, Sequelize } from "sequelize/types";
 const router = express.Router();
 
 const sequelizeUi = (db: Sequelize) => {
-  const models = db.models;
+  const { models } = db;
   router.get("/", (req: Request, res: Response) =>
     getAllModels(req, res, models)
   );
-  router.get("/schema", (req: Request, res: Response) =>
-    getModelSchemasName(req, res, models)
+  router.get("/schemas", (req: Request, res: Response) =>
+    getModelsName(req, res, models)
   );
   router.get("find-all/schema-name/:name", (req: Request, res: Response) =>
     getModelByName(req, res, models)
@@ -27,15 +27,15 @@ const getAllModels = async (req: Request, res: Response, models: AllModels) => {
     result[key] = await models[key].findAll();
   }
 
-  res.json(result);
+  return res.json(result);
 };
 
-const getModelSchemasName = (
+const getModelsName = (
   req: Request,
-  res: Response,
+  res: Response<string[]>,
   models: AllModels
 ) => {
-  res.json(Object.keys(models));
+  return res.json(Object.keys(models));
 };
 
 const getModelSchemaByName = async (
@@ -44,12 +44,11 @@ const getModelSchemaByName = async (
   models: AllModels
 ) => {
   if (!models[req.params.name]) {
-    res.json("model doesn't found").status(400);
-    return;
+    return res.json("model doesn't found").status(400);
   }
   const model = models[req.params.name];
 
-  res.json(await model.describe());
+  return res.json(await model.describe());
 };
 
 const getModelByName = async (
@@ -58,12 +57,11 @@ const getModelByName = async (
   models: AllModels
 ) => {
   if (!models[req.params.name]) {
-    res.json("model doesn't found").status(400);
-    return;
+    return res.json("model doesn't found").status(400);
   }
 
   const model = models[req.params.name];
-  res.json(
+  return res.json(
     await model.findAll({ attributes: { exclude: ["updatedAt", "createdAt"] } })
   );
 };

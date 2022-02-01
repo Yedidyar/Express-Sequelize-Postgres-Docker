@@ -1,5 +1,5 @@
 import { Model, DataTypes } from "sequelize";
-import { db } from "../util/database";
+import { db } from "../../util/database";
 
 interface UserInstance extends Model {
   id: number;

@@ -1,8 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import { db } from "./util/database";
-import { router as usersRouter } from "./routes/users";
-import sequelizeUi from "./sequelize-ui";
-import { User } from "./models/users";
+import { router as usersRouter } from "./v1/routes/users";
+import v1 from "./v1";
 require("dotenv").config();
 
 const app = express();
@@ -10,7 +9,6 @@ const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/sequelize-ui-endpoint", sequelizeUi(db));
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Method", [
@@ -21,6 +19,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   ]);
   next();
 });
+app.use("/api/v1", v1);
 
 app.use("/users", usersRouter);
 
