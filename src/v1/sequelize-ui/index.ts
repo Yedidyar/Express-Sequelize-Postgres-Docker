@@ -5,11 +5,11 @@ const router = express.Router();
 
 const sequelizeUi = (db: Sequelize) => {
   const { models } = db;
-  router.get("/", (req: Request, res: Response) =>
-    getAllModels(req, res, models)
-  );
   router.get("/schemas", (req: Request, res: Response) =>
     getModelsName(req, res, models)
+  );
+  router.get("/find-all", (req: Request, res: Response) =>
+    getAllModels(req, res, models)
   );
   router.get("find-all/schema-name/:name", (req: Request, res: Response) =>
     getModelByName(req, res, models)
