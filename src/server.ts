@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import { db } from "./util/database";
 import { router as usersRouter } from "./v1/routes/users";
 import v1 from "./v1";
+import { initModels } from "./v1/models/init-models";
 require("dotenv").config();
 
 const app = express();
@@ -29,6 +30,7 @@ app.get("/", (req: Request, res: Response) => {
 
 (async () => {
   try {
+    initModels(db);
     await db.sync({ force: false });
 
     app.listen(PORT, () => {
